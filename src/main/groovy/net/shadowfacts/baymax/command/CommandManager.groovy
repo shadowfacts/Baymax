@@ -3,6 +3,7 @@ package net.shadowfacts.baymax.command
 import net.dv8tion.jda.events.message.MessageReceivedEvent
 import net.shadowfacts.baymax.Baymax
 import net.shadowfacts.baymax.command.exception.CommandException
+import net.shadowfacts.baymax.util.Utils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -51,7 +52,7 @@ class CommandManager {
 				}
 
 			} else {
-				logger.info("User %s request nonexistent command %s", event.authorNick, command)
+				logger.info("User %s request nonexistent command %s", Utils.getName(event.author, event.guild), command)
 				event.channel.sendMessage("No such command " + command)
 			}
 		}

@@ -30,6 +30,14 @@ dependencies {
 	compile group: "com.google.code.gson", name: "gson", version: gson_version
 }
 
+jar {
+	manifest {
+		attributes	"Implementation-Title": "Baymax",
+					"Implementation-Version": version,
+					"Main-Class": "net.shadowfacts.baymax.Baymax"
+	}
+}
+
 artifacts {
 	archives shadowJar
 }

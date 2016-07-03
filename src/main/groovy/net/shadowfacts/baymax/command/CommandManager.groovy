@@ -46,7 +46,7 @@ class CommandManager {
 				} catch (CommandException e) {
 					event.getChannel().sendMessage("Error: " + e.message)
 				} catch (RuntimeException e) {
-					event.getChannel().sendMessage("Exception thrown: " + e.message)
+					event.getChannel().sendMessage("Exception thrown: " + e)
 					e.printStackTrace()
 				}
 

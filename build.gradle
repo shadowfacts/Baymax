@@ -1,0 +1,30 @@
+plugins {
+	id "groovy"
+	id "idea"
+	id "com.github.johnrengelman.shadow" version "1.2.3"
+}
+
+repositories {
+	jcenter()
+	maven {
+		name "shadowfacts"
+		url "http://mvn.rx14.co.uk/shadowfacts/"
+	}
+	flatDir {
+		dirs "libs"
+	}
+}
+
+dependencies {
+	compile group: "org.codehaus.groovy", name: "groovy-all", version: groovy_version
+
+	compile group: "net.shadowfacts", name: "ShadowLib", version: shadowlib_version
+	compile group: "net.shadowfacts", name: "ShadowConfig", version: shadowconfig_version
+	compile group: "net.dv8tion", name: "JDA", version: jda_version
+	compile group: "org.reflections", name: "reflections", version: reflections_version
+	compile group: "org.slf4j", name: "slf4j-simple", version: slf4j_version
+	
+	compile group: "org.kohsuke", name: "github-api", version: gh_version
+
+	compile group: "com.google.code.gson", name: "gson", version: gson_version
+}

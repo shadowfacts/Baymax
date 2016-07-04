@@ -1,5 +1,6 @@
-package net.shadowfacts.baymax.module.factoids;
+package net.shadowfacts.baymax.module.factoids
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.*
 
 import java.lang.reflect.Type
@@ -15,7 +16,7 @@ public class FactoidManager {
 
 	private Map<String, Map<String, String>> factoids
 
-	public static void init() {
+	static void init() {
 		def f = new File("factoids.json")
 		if (f.exists()) {
 			instance = gson.fromJson(new FileReader(f), FactoidManager.class)
@@ -32,11 +33,11 @@ public class FactoidManager {
 		writer.close()
 	}
 
-	public String get(String server, String id) {
+	String get(String server, String id) {
 		return factoids.containsKey(server) ? factoids.get(server).get(id) : null;
 	}
 
-	public void set(String server, String id, String factoid) {
+	void set(String server, String id, String factoid) {
 		if (!factoids.containsKey(server)) {
 			factoids.put(server, new HashMap<>())
 		}
@@ -44,17 +45,17 @@ public class FactoidManager {
 		save()
 	}
 
-	public void remove(String server, String id) {
+	void remove(String server, String id) {
 		if (factoids.containsKey(server)) {
 			factoids.get(server).remove(id)
 			save()
 		}
 	}
 
-	private static class Adapter implements JsonSerializer<FactoidManager> {
+	private static class Adapter implements JsonSerializer<FactoidManager>, JsonDeserializer<FactoidManager> {
 
 		@Override
-		public JsonElement serialize(FactoidManager src, Type typeOfSrc, JsonSerializationContext context) {
+		JsonElement serialize(FactoidManager src, Type typeOfSrc, JsonSerializationContext context) {
 			def obj = new JsonObject()
 			def factoids = new JsonObject()
 
@@ -69,6 +70,24 @@ public class FactoidManager {
 			obj.add("factoids", factoids)
 
 			return obj
+		}
+
+		@Override
+		FactoidManager deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			def instance = new FactoidManager()
+			instance.factoids = new HashMap<>()
+
+			def factoids = json.asJsonObject.get("factoids").asJsonObject
+
+			factoids.entrySet().each({
+				def server = it.key
+				def serverObj = it.value.asJsonObject
+				serverObj.entrySet().each({
+					instance.set(server, it.key, it.value.asString)
+				})
+			})
+
+			return instance
 		}
 
 	}

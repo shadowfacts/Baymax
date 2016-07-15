@@ -39,13 +39,19 @@ class ModuleReminder extends Module {
 			ReminderManager.instance.reminders.entrySet().each({
 				def user = event.JDA.getUserById(it.key)
 				it.value.each({
-					timer.schedule(new TimerTask() {
-						@Override
-						void run() {
-							user.privateChannel.sendMessage("Reminder: " + String.join(" ", it.reminder))
-							ReminderManager.instance.remove(user, it)
-						}
-					}, it.time - new Date().time)
+					def delay = it.time = new Date().time
+					if (delay > 0) {
+						timer.schedule(new TimerTask() {
+							@Override
+							void run() {
+								user.privateChannel.sendMessage("Reminder: " + String.join(" ", it.reminder))
+								ReminderManager.instance.remove(user, it)
+							}
+						}, delay)
+					} else {
+						user.privateChannel.sendMessage("Reminder: " + String.join(" ", it.reminder))
+						ReminderManager.instance.remove(user, it)
+					}
 				})
 			})
 		}
